@@ -1,39 +1,30 @@
 <?php
-// Konfigurasi Database
-$host     = 'localhost';
-$dbname   = 'nama_database_kamu';
-$username = 'username_db';
-$password = 'password_db';
+// Konfigurasi database
+$host = "localhost";
+$user = "root";      // ganti sesuai user mariaDB
+$pass = "";          // ganti sesuai password mariaDB
+$db   = "mompopcafe";
 
-try {
-    // 1. Koneksi ke MariaDB menggunakan PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("Koneksi gagal: " . $e->getMessage());
+// Koneksi ke database
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// 2. Proses formulir saat method POST dikirim
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nama_pelanggan = trim($_POST['nama_pelanggan'] ?? '');
-    $nama_produk    = trim($_POST['nama_produk'] ?? '');
-    $jumlah         = (int)($_POST['jumlah'] ?? 0);
+// Ambil data dari form
+$nama    = $_POST['nama'];
+$telepon = $_POST['telepon'];
+$menu    = $_POST['menu'];
+$alamat  = $_POST['alamat'];
 
-    if (!empty($nama_pelanggan) && !empty($nama_produk) && $jumlah > 0) {
-        // Prepared Statement untuk mencegah SQL Injection
-        $sql = "INSERT INTO pesanan (nama_pelanggan, nama_produk, jumlah) VALUES (:nama, :produk, :jumlah)";
-        $stmt = $pdo->prepare($sql);
-
-        if ($stmt->execute([':nama' => $nama_pelanggan, ':produk' => $nama_produk, ':jumlah' => $jumlah])) {
-            $message = "<p style='color:green;'>Pesanan berhasil disimpan!</p>";
-        } else {
-            $message = "<p style='color:red;'>Gagal menyimpan pesanan.</p>";
-        }
-    } else {
-        $message = "<p style='color:red;'>Mohon isi semua data dengan benar.</p>";
-    }
+// Simpan ke database
+$sql = "INSERT INTO orders (nama, telepon, menu, alamat)
+        VALUES ('$nama', '$telepon', '$menu', '$alamat')";
+if ($conn->query($sql) === TRUE) {
+    echo "<script>alert('Pesanan berhasil tersimpan!'); window.location.href='index.html';</script>";
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
 }
+
+$conn->close();
 ?>
