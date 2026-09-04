@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struktur Organisasi Kelas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#E4002B;
+    --red-dark:#A3001F;
+    --white:#FFFFFF;
+    --gray-light:#F1F1F2;
+    --gray:#9A9C9E;
+    --gray-dark:#3A3B3D;
+    --black:#161616;
+    --font-display:'Poppins',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font-body);
+    background:var(--gray-light);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block;max-width:100%;}
+ 
+  /* ===== NAV ===== */
+  .navbar{
+    position:sticky;top:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;
+    background:var(--black);
+    border-bottom:3px solid var(--red);
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand__mark{
+    width:34px;height:34px;border-radius:50%;
+    background:conic-gradient(var(--red) 0 60%, var(--white) 60% 80%, var(--gray) 80% 100%);
+    box-shadow:inset 0 0 0 4px var(--black);
+  }
+  .brand__text{
+    font-family:var(--font-display);font-weight:800;color:var(--white);
+    letter-spacing:.5px;font-size:15px;line-height:1.1;
+  }
+  .brand__text span{display:block;font-family:var(--font-body);font-weight:500;color:var(--gray);font-size:11px;}
+  .nav-links{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:999px;}
+  .nav-links button{
+    font-family:var(--font-body);font-weight:600;font-size:13.5px;
+    color:var(--gray);background:transparent;border:none;cursor:pointer;
+    padding:9px 18px;border-radius:999px;transition:.25s;
+  }
+  .nav-links button.active{background:var(--red);color:var(--white);}
+  .nav-links button:not(.active):hover{color:var(--white);}
+ 
+  /* ===== PAGE WRAPPER ===== */
+  .page{display:none;animation:fadeIn .45s ease;}
+  .page.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+ 
+  /* ===== HERO (network motif signature) ===== */
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(160deg,var(--black) 0%, var(--gray-dark) 55%, var(--black) 100%);
+    padding:56px 24px 68px;text-align:center;color:var(--white);
+  }
+  .hero svg.net{position:absolute;inset:0;width:100%;height:100%;opacity:.35;}
+  .hero__eyebrow{
+    display:inline-block;font-family:var(--font-body);font-weight:600;font-size:12px;
+    letter-spacing:2.5px;color:var(--red);text-transform:uppercase;
+    border:1px solid rgba(228,0,43,.5);padding:5px 14px;border-radius:999px;
+    position:relative;z-index:2;
+  }
+  .hero h1{
+    position:relative;z-index:2;
+    font-family:var(--font-display);font-weight:800;font-size:clamp(28px,5vw,44px);
+    margin-top:16px;letter-spacing:.5px;
+  }
+  .hero p{position:relative;z-index:2;color:var(--gray);margin-top:10px;font-size:15px;}
+ 
+  .container{max-width:1080px;margin:0 auto;padding:0 24px;}
+ 
+  /* ===== ORG CHART ===== */
+  .orgchart{padding:56px 0 20px;}
+  .tier{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;position:relative;margin-bottom:6px;}
+  .tier--single{margin-bottom:0;}
+  .connector{width:2px;height:34px;background:var(--red);margin:0 auto;}
+  .connector--wide{position:relative;height:34px;margin-bottom:0;}
+  .connector--wide::before{
+    content:"";position:absolute;left:50%;top:0;width:2px;height:34px;background:var(--red);transform:translateX(-50%);
+  }
+ 
+  .portrait{
+    background:var(--white);border-radius:var(--radius);
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    overflow:hidden;width:190px;
+    border:1px solid #eee;
+    transition:transform .25s, box-shadow .25s;
+  }
+  .portrait:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.14);}
+  .portrait--lead{width:220px;}
+  .portrait__img-wrap{aspect-ratio:3/4;background:var(--gray-light);position:relative;overflow:hidden;}
+  .portrait__img{width:100%;height:100%;object-fit:cover;}
+  .portrait__badge{
+    position:absolute;top:8px;left:8px;background:var(--red);color:var(--white);
+    font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:1px;
+    padding:4px 9px;border-radius:6px;text-transform:uppercase;
+  }
+  .portrait__body{padding:12px 14px 16px;text-align:center;}
+  .portrait__role{
+    font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--red);
+    text-transform:uppercase;margin-bottom:3px;
+  }
+  .portrait__name{font-family:var(--font-display);font-weight:700;font-size:14.5px;color:var(--black);}
+ 
+  .row-label{
+    text-align:center;font-family:var(--font-display);font-weight:700;font-size:12px;
+    letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin:34px 0 18px;
+  }
+  .row-label::before,.row-label::after{content:"";display:inline-block;width:26px;height:1px;background:var(--gray);vertical-align:middle;margin:0 10px;}
+ 
+  /* ===== PIKET ===== */
+  .piket{padding:20px 0 70px;}
+  .section-title{
+    font-family:var(--font-display);font-weight:800;font-size:26px;margin-bottom:6px;
+  }
+  .section-sub{color:var(--gray-dark);opacity:.8;font-size:14px;margin-bottom:30px;}
+  .piket-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;}
+  .piket-card{
+    background:var(--white);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 8px 22px rgba(0,0,0,.07);border:1px solid #eee;
+    flex:1 1 290px;max-width:330px;
+  }
+  .piket__img-wrap{aspect-ratio:19/6;background:var(--gray-dark);position:relative;overflow:hidden;}
+  .piket__img{width:100%;height:100%;object-fit:cover;}
+  .piket__day{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);
+    color:var(--white);font-family:var(--font-display);font-weight:700;font-size:15px;
+    padding:16px 14px 8px;letter-spacing:.5px;
+  }
+  .piket__body{padding:12px 16px 16px;}
+  .piket__names{font-size:13.5px;color:var(--gray-dark);line-height:1.6;}
+  .piket__names b{color:var(--black);}
+ 
+  /* ===== PAGE 2 ===== */
+  .profile-hero{
+    background:var(--red);color:var(--white);padding:50px 24px;text-align:center;
+    position:relative;overflow:hidden;
+  }
+  .profile-hero::after{
+    content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;
+    border-radius:50%;background:rgba(255,255,255,.08);
+  }
+  .profile-hero h1{font-family:var(--font-display);font-weight:800;font-size:clamp(26px,4.5vw,38px);position:relative;z-index:2;}
+  .profile-hero p{margin-top:10px;color:rgba(255,255,255,.85);position:relative;z-index:2;font-size:14.5px;}
+ 
+  .gallery{padding:50px 0 10px;}
+  .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .gallery-card{
+    background:var(--white);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #eee;
+  }
+  .gallery__img-wrap{aspect-ratio:4/3;background:var(--gray-light);overflow:hidden;}
+  .gallery__img{width:100%;height:100%;object-fit:cover;}
+  .gallery__caption{padding:12px 16px;font-size:13.5px;font-weight:600;color:var(--gray-dark);}
+ 
+  .vm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:50px 0;}
+  .vm-card{background:var(--white);border-radius:var(--radius);padding:26px;border-top:4px solid var(--red);box-shadow:0 8px 22px rgba(0,0,0,.06);}
+  .vm-card h3{font-family:var(--font-display);font-weight:700;font-size:16px;margin-bottom:10px;color:var(--red-dark);text-transform:uppercase;letter-spacing:1px;}
+  .vm-card p, .vm-card li{font-size:14px;color:var(--gray-dark);line-height:1.8;}
+  .vm-card ul{padding-left:18px;}
+ 
+  .rules{padding:10px 0 50px;}
+  .rules-list{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin-top:18px;}
+  .rule-item{
+    display:flex;gap:12px;align-items:flex-start;background:var(--white);
+    padding:14px 16px;border-radius:10px;border:1px solid #eee;
+  }
+  .rule-num{
+    font-family:var(--font-display);font-weight:800;color:var(--white);background:var(--black);
+    min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;
+  }
+  .rule-item p{font-size:13.5px;color:var(--gray-dark);line-height:1.5;}
+ 
+  .quote-band{
+    background:var(--black);color:var(--white);text-align:center;padding:48px 24px;margin-top:10px;
+  }
+  .quote-band p{font-family:var(--font-display);font-weight:600;font-size:clamp(16px,2.6vw,22px);max-width:720px;margin:0 auto;line-height:1.5;}
+  .quote-band span{display:block;margin-top:12px;color:var(--red);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+ 
+  footer{background:var(--gray-dark);color:var(--gray);text-align:center;padding:20px;font-size:12.5px;}
+ 
+  @media(max-width:640px){
+    .vm-grid, .rules-list{grid-template-columns:1fr;}
+    .navbar{padding:12px 14px;}
+    .nav-links button{padding:8px 12px;font-size:12.5px;}
+  }
+</style>
+</head>
+<body>
+ 
+<nav class="navbar">
+  <div class="brand">
+    <div class="brand__mark"></div>
+    <div class="brand__text">SMK TELKOM<span>Struktur Organisasi Kelas</span></div>
+  </div>
+  <div class="nav-links">
+    <button class="active" data-page="struktur">Struktur Kelas</button>
+    <button data-page="profil">Profil &amp; Tata Tertib</button>
+  </div>
+</nav>
+ 
+<!-- ================= PAGE 1: STRUKTUR ================= -->
+<section id="struktur" class="page active">
+ 
+  <div class="hero">
+    <svg class="net" viewBox="0 0 1000 300" preserveAspectRatio="none">
+      <g stroke="#E4002B" stroke-width="1">
+        <line x1="0" y1="40" x2="220" y2="120"/>
+        <line x1="220" y1="120" x2="420" y2="30"/>
+        <line x1="220" y1="120" x2="380" y2="220"/>
+        <line x1="420" y1="30" x2="650" y2="90"/>
+        <line x1="650" y1="90" x2="850" y2="20"/>
+        <line x1="650" y1="90" x2="800" y2="210"/>
+        <line x1="380" y1="220" x2="600" y2="270"/>
+        <line x1="600" y1="270" x2="1000" y2="230"/>
+      </g>
+      <g fill="#E4002B">
+        <circle cx="220" cy="120" r="4"/><circle cx="420" cy="30" r="4"/><circle cx="380" cy="220" r="4"/>
+        <circle cx="650" cy="90" r="4"/><circle cx="850" cy="20" r="4"/><circle cx="800" cy="210" r="4"/>
+        <circle cx="600" cy="270" r="4"/><circle cx="1000" cy="230" r="4"/>
+      </g>
+    </svg>
+    <span class="hero__eyebrow">Tahun Ajaran 2026/2027</span>
+    <h1>Struktur Organisasi Kelas XI TKJ 1</h1>
+    <p>Susunan pengurus kelas dan jadwal piket harian</p>
+  </div>
+ 
+  <div class="container orgchart">
+ 
+    <!-- Wali Kelas -->
+    <div class="tier tier--single">
+      <div class="portrait portrait--lead">
+        <div class="portrait__img-wrap">
+          <span class="portrait__badge">Wali Kelas</span>
+          <img class="portrait__img" src="22b4f635-ff7e-4714-ac28-90d357f9f672.jpg" alt="Foto Wali Kelas">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Wali Kelas</p>
+          <p class="portrait__name">Yaniko Dimas Yogo Prasetyo</p>
+        </div>
+      </div>
+    </div>
+    <div class="connector"></div>
+ 
+    <!-- Ketua & Wakil -->
+    <div class="tier">
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="X TKJ 1_20_Jhon Terry Eka Ramadhani.jpg" alt="Foto Ketua Kelas">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Ketua Kelas</p>
+          <p class="portrait__name">Jhon Terry Eka Ramandhani</p>
+        </div>
+      </div>
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="X TKJ3_11_Calya Aqila Al Mauzavie .jpg" alt="Foto Wakil Ketua Kelas">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Wakil Ketua</p>
+          <p class="portrait__name">Calya Aqila Al Mouzavie</p>
+        </div>
+      </div>
+    </div>
+ 
+    <p class="row-label">Sekretaris &amp; Bendahara</p>
+ 
+    <!-- Sekretaris & Bendahara -->
+    <div class="tier">
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="X TKJ 1_03_Amelia Fransiska Dyah C.jpg" alt="Foto Sekretaris 1">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Sekretaris 1</p>
+          <p class="portrait__name">Amelia Fransiska Dyah C</p>
+        </div>
+      </div>
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="X TKJ 1_27_Naura Yuwan Ramandhita.jpg" alt="Foto Sekretaris 2">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Sekretaris 2</p>
+          <p class="portrait__name">Naura Yuwan Ramandhita</p>
+        </div>
+      </div>
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="XT4_02_Ajeng Ayu Siswati.jpg" alt="Foto Bendahara 1">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Bendahara 1</p>
+          <p class="portrait__name">Ajeng Ayu Siswati</p>
+        </div>
+      </div>
+      <div class="portrait">
+        <div class="portrait__img-wrap">
+          <img class="portrait__img" src="X TKJ 2_10_Farlitha As Sabrin.jpg" alt="Foto Bendahara 2">
+        </div>
+        <div class="portrait__body">
+          <p class="portrait__role">Bendahara 2</p>
+          <p class="portrait__name">Farlitha As.Sabrin</p>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <div class="container piket">
+    <h2 class="section-title">Jadwal Piket Kelas</h2>
+    <p class="section-sub">Petugas piket harian, Senin &ndash; Jumat</p>
+    <div class="piket-grid">
+ 
+      <div class="piket-card">
+        <div class="piket__img-wrap">
+          <img class="piket__img" src="WhatsApp Image 2026-08-20 at 09.59.23.jpeg" alt="Foto Piket Senin">
+          <span class="piket__day">Senin</span>
+        </div>
+        <div class="piket__body">
+          <p class="piket__names"><b>Petugas:</b>1.Muhammad Ridhlo Maulana Akbar
+2.M.Devan Abdika Bangsa
+3.Fabrianz Torino Putranzah
+4.Ahmad Zidan Alfadly
+5.Acha Bryan Firdaus
+6.Ahmad Khubaisy Muhsinin
+7.Juan Dzakwan Hisyam</p>
+        </div>
+      </div>
+ 
+      <div class="piket-card">
+        <div class="piket__img-wrap">
+          <img class="piket__img" src="WhatsApp Image 2026-08-20 at 09.59.24.jpeg" alt="Foto Piket Selasa">
+          <span class="piket__day">Selasa</span>
+        </div>
+        <div class="piket__body">
+          <p class="piket__names"><b>Petugas:</b>1.Silva Talitha Dzakira
+2.Fizza Fahrian Dwidama
+3.Muhammad Farid Byantara Kusuma
+4.Khalil Azzam Mudji Maulinda
+5.Nico Putra Pramana
+6.Muhammad Akbar Brilian
+7.Ahmad Sony Fahreza</p>
+        </div>
+      </div>
+ 
+      <div class="piket-card">
+        <div class="piket__img-wrap">
+          <img class="piket__img" src="WhatsApp Image 2026-08-20 at 09.59.23.jpeg" alt="Foto Piket Rabu">
+          <span class="piket__day">Rabu</span>
+        </div>
+        <div class="piket__body">
+          <p class="piket__names"><b>Petugas:</b>1.Naura Yuwan Ramandhita
+2.Nadine Anindya Alfian Putri
+3.Amelia Fransiska Dyah C
+4.Reyghen Ethan Bradly Simanjuntak
+5.Theodorius Adi Fatlolon
+6.Calya Aqila Mouzavie
+7.Muhammad Yafiq Nadim Rafif
+</p>
+        </div>
+      </div>
+ 
+      <div class="piket-card">
+        <div class="piket__img-wrap">
+          <img class="piket__img" src="WhatsApp Image 2026-08-20 at 09.59.24 (1).jpeg" alt="Foto Piket Kamis">
+          <span class="piket__day">Kamis</span>
+        </div>
+        <div class="piket__body">
+          <p class="piket__names"><b>Petugas:</b>1.Ayyub
+2.Ajeng Ayu Siswati
+3.Dhaniel Wahyu Bahtiar
+4.Ken Kanzan Makhfiyan
+5.Baskoro Gadang Widhyodono
+6.Raditya Satrio Abimanyu
+7.Farlitha As.Sabrin</p>
+        </div>
+      </div>
+      <div class="piket-card">
+        <div class="piket__img-wrap">
+          <img class="piket__img" src="WhatsApp Image 2026-08-20 at 09.59.24 (2).jpeg" alt="Foto Piket Jumat">
+          <span class="piket__day">Jumat</span>
+        </div>
+        <div class="piket__body">
+          <p class="piket__names"><b>Petugas:</b>1.Zidni Nuro M
+2.Dwi Affandy
+3.Lintang Albrian Anwar
+4.Zanuar Eka Prasetya
+5.Queensha Aurellia
+6.Jhon Terry Eka Ramadhani</p>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
+ 
+</section>
+ 
+<!-- ================= PAGE 2: PROFIL & TATA TERTIB ================= -->
+<section id="profil" class="page">
+ 
+  <div class="profile-hero">
+    <h1>Profil Kelas XI TKJ 1</h1>
+    <p>Visi, misi, dan tata tertib yang menjadi pedoman bersama</p>
+  </div>
+ 
+  <div class="container">
+    <div class="gallery">
+      <h2 class="section-title">Momen Bersama</h2>
+      <p class="section-sub">Kebersamaan anak-anak kelas XI TKJ 1</p>
+      <div class="gallery-grid">
+        <div class="gallery-card">
+          <div class="gallery__img-wrap">
+            <img class="gallery__img" src="WhatsApp Image 2026-08-20 at 09.42.56.jpeg" alt="Foto bareng anak kelas 1">
+          </div>
+          <p class="gallery__caption">Foto Kebersamaan 1</p>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery__img-wrap">
+            <img class="gallery__img" src="WhatsApp Image 2026-08-11 at 20.13.47.jpeg" alt="Foto bareng anak kelas 2">
+          </div>
+          <p class="gallery__caption">Foto Kebersamaan 2</p>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="vm-grid">
+      <div class="vm-card">
+        <h3>Visi</h3>
+        <p>Menjadi kelas yang disiplin, solid, dan berprestasi dengan menjunjung tinggi kekompakan serta tanggung jawab bersama.</p>
+      </div>
+      <div class="vm-card">
+        <h3>Misi</h3>
+        <ul>
+          <li>Membangun kerja sama antarwarga kelas</li>
+          <li>Menjaga kebersihan dan kenyamanan ruang kelas</li>
+          <li>Menumbuhkan sikap disiplin dan tanggung jawab</li>
+          <li>Aktif dalam kegiatan sekolah</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="container rules">
+    <h2 class="section-title">Tata Tertib Kelas</h2>
+    <p class="section-sub">Berlaku untuk seluruh anggota kelas</p>
+    <div class="rules-list">
+      <div class="rule-item"><span class="rule-num">1</span><p>Hadir tepat waktu, maksimal 10 menit sebelum jam pelajaran dimulai.</p></div>
+      <div class="rule-item"><span class="rule-num">2</span><p>Mengenakan seragam sesuai jadwal dan atribut sekolah lengkap.</p></div>
+      <div class="rule-item"><span class="rule-num">3</span><p>Petugas piket melaksanakan tugas sebelum jam pelajaran pertama.</p></div>
+      <div class="rule-item"><span class="rule-num">4</span><p>Menjaga kebersihan dan kerapian kelas sepanjang hari.</p></div>
+      <div class="rule-item"><span class="rule-num">5</span><p>Meminta izin kepada wali kelas atau guru piket bila berhalangan hadir.</p></div>
+      <div class="rule-item"><span class="rule-num">6</span><p>Menjaga sikap sopan santun terhadap guru dan sesama teman.</p></div>
+    </div>
+  </div>
+ 
+  <div class="quote-band">
+    <p>&ldquo;Kelas yang kuat dibangun dari kekompakan, kedisiplinan, dan rasa saling percaya.&rdquo;</p>
+    <span>XI TKJ 1 &mdash; SMK Telkom</span>
+  </div>
+ 
+</section>
+ 
+<footer>&copy; 2026 Struktur Organisasi Kelas XI TKJ 1 &middot; SMK Telkom</footer>
+ 
+<script>
+  const buttons = document.querySelectorAll('.nav-links button');
+  const pages = document.querySelectorAll('.page');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      pages.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.page).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+</script>
+ 
+</body>
+</html>
